@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Submit{% endblock %}
+
+{% block content %}
+<h1>Submit Your Solution</h1>
+<div class="row">
+	<div class="span8 offset2">
+	<form class="well" action="" method="POST">
+		<label>Problem ID:</label>
+		<input class="span7" type="text" name="problem" value="{{ params.problem }}" />
+		<label>Language:</label>
+		<select name="language" class="span7">
+			<option value="1">G++</option>
+			<option value="2">Gcc</option>
+			<option value="3">Fpr</option>
+			<option value="4">Gcj</option>
+			<option value="5">Java</option>
+			<option value="6">Guile</option>
+		</select>
+		<label>Source Code:</label>
+		<textarea class="span7" name="source_code" rows="20" cols=""></textarea>
+		{% csrf_token %}
+		<div class="pagination-centered">
+			<input class="btn btn-primary span3" name="submit" type="submit" value="Submit" />
+		</div>
+	</form>
+	</div>
+</div>
+{% endblock %}

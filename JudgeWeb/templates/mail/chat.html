@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Mail{% endblock %}
+{% block content %}
+<hr />
+{% for object in object_list %}
+<div class="row">
+<div class="alert alert-info span10 {% if object.from_user.id == request.user.id %}offset2{% endif %}">
+	<h2>{{ object.title }}</h2>
+	<pre>{{ object.content }}</pre>
+	<hr />
+	<p>Post By:{{ object.from_user.username }} at {{ object.create_time }}</p>
+</div>
+</div>
+{% endfor %}
+{% endblock %}

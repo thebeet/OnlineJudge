@@ -1,0 +1,4 @@
+{% autoescape off %}{
+	"message": {% autoescape on %}"{{ message }}"{% endautoescape %}
+}
+{% endautoescape %}

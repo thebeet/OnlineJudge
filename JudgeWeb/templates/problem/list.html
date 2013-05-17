@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load page %}
+{% block title %}Problems{% endblock %}
+{% block content %}
+{% load temp_tags %}
+
+<h1>Problem Set</h1>
+{% if is_paginated %}
+<div class="pagination pagination-centered">
+    <ul>
+        <li {% if not page_obj.has_previous %}class="active"{% endif %}>
+        <a {% if page_obj.has_previous %}href="?{{ request.GET|page:page_obj.previous_page_number }}"{% endif %}>←</a>
+        </li>
+        {% for p in paginator.page_range %}
+        <li {% if p == page_obj.number %}class="active"{% endif %}>
+        <a href="?{{ request.GET|page:p }}">{{ p }}</a>
+        </li>
+        {% endfor %}
+        <li {% if not page_obj.has_next %}class="active"{% endif %}>
+        <a {% if page_obj.has_next %}href="?{{ request.GET|page:page_obj.next_page_number }}"{% endif %}>→</a>
+        </li>
+    </ul>
+</div>
+{% endif %}
+
+{% if volume %}
+<div class="pagination pagination-centered">
+    <ul>
+        <li {% if volume == 1 %}class="active"{% endif %}>
+        <a href="{% url problem:volume 1 %}">TOP</a>
+        </li>
+        {% for v in volume_range %}
+        <li {% if v == volume %}class="active"{% endif %}>
+        <a href="{% url problem:volume v %}">{{ v }}</a>
+        </li>
+        {% endfor %}
+        <li {% if volume == volume_total %}class="active"{% endif %}>
+        <a href="{% url problem:volume volume_total %}">END</a>
+        </li>
+    </ul>
+</div>
+{% endif %}
+<table id="problem_list" class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            {% if user.is_authenticated %}
+            <th class="span1">AC</th>
+            {% endif %}
+            <th class="span1">ID</th>
+            <th>TITLE</th>
+            <th class="span1"><a href="{% url problem:order %}">SOLVE</a></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for problem in object_list %}
+        <tr data-problem-id="{{ problem.id }}" class="{% if user.is_authenticated %}{% if problem.user_status == 1 %}solved{% elif problem.user_status %}wrong{% endif %} {% if problem.collect %}collect{% endif %}{% endif %}">
+            {% if user.is_authenticated %}
+            <td>
+                <div class="status"></div>
+            </td>
+            {% endif %}
+            <td> <a href="{% url problem:detail problem.id %}{% if request.GET.search %}?search={{ request.GET.search|urlencode  }}{% endif %}">{{ problem.id }}</a> </td>
+            <td>
+                {% if user.is_authenticated %}
+                <div class="fav"></div>
+                {% endif %}
+                <a href="{% url problem:detail problem.id %}{% if request.GET.search %}?search={{ request.GET.search|urlencode  }}{% endif %}">{{ problem.title }}</a>
+            </td>
+            <td><a href="{% url solution:list %}?problem={{ problem.id }}&result=1">{{ problem.solved }}</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

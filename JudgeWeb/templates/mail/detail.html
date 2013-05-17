@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Mail{% endblock %}
+{% block content %}
+<h1>Mail</h1>
+<table class="table table-striped table-bordered">
+	<thead>
+		<tr>
+			<th>
+				From: {{ mail.from_user }}
+				<p>
+				{{ mail.title }}
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				<pre>{{ mail.content }}</pre>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<div class="row">
+	<div class="span8 offset2">
+		<form class="well" method="POST">
+			{% csrf_token %}
+			<label>Title:</label>
+			<input class="span7" name="title" type="text" />
+			<label>Content:</label>
+			<textarea class="span7" name="content" rows="16"></textarea>
+			<div class="pagination-centered">
+				<input class="btn btn-primary" name="submit" type="submit" value="Send" />
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}

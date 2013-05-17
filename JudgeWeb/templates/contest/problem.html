@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Problem {{ problem.id }}. {{ problem.title }}{% endblock %}
+{% block css %}<link href="{{ STATIC_URL }}css/problem.css" rel="stylesheet">{% endblock %}
+{% block content %}
+<div class="problem_container">
+	<center>
+		<div>
+			<h2>{{ problem.id }}. {{ problem.title }}</h2>
+		</div>
+		<div>
+			<span class="limit_label">Time Limit:</span><span>{{ problem.time_limit }}ms</span>
+			<span class="limit_label">Memory Limit:</span><span>{{ problem.memory_limit }}KB</span>
+			<br />
+			<span class="limit_label">Total Submissions:</span><span>{{ submit_counter }} ({{submit_user_counter}} user)</span>
+			<span class="limit_label">Accepted:</span><span>{{ ac_solution_counter }} ({{ac_submit_user_counter}} user)</span>
+            <br />
+			<a href="{% url solution:submit problem.id %}">[Submit]</a>
+			<a href="{% url solution:list %}?problem={{ problem.id }}">[Status]</a>
+			<a href="{% url problem:statistic problem.id %}">[Statistic]</a>
+			<a href="{% url discuss:list problem.id %}">[Discuss]</a>
+		</div>
+	</center>
+	{% if problem.description %}
+		<div class="subtitle">
+			<h3>Desciption</h3>
+		</div>
+		<div class="content">
+			<p>{{ problem.description|safe }}</p>
+		</div>
+	{% endif %}
+
+	{% if problem.input %}
+		<div class="subtitle">
+			<h3>Input</h3>
+		</div>
+		<div class="content">
+			<p>{{ problem.input|safe }}</p>
+		</div>
+	{% endif %}
+
+	{% if problem.output %}
+		<div class="subtitle">
+			<h3>Output</h3>
+		</div>
+		<div class="content">
+			<p>{{ problem.output|safe }}</p>
+		</div>
+	{% endif %}
+
+	{% if problem.sample_input %}
+		<div class="subtitle">
+			<h3>Sample Input</h3>
+		</div>
+		<div class="content">
+			<pre class="prettyprint linenums">{{ problem.sample_input|safe }}</pre>
+		</div>
+	{% endif %}
+
+	{% if problem.sample_output %}
+		<div class="subtitle">
+			<h3>Sample Output</h3>
+		</div>
+		<div class="content">
+			<pre class="prettyprint linenums">{{ problem.sample_output|safe }}</pre>
+		</div>
+	{% endif %}
+
+	{% if problem.hint %}
+		<div class="subtitle">
+			<h3>Hint</h3>
+		</div>
+		<div class="content">
+			<p>{{ problem.hint|safe }}</p>
+		</div>
+	{% endif %}
+	{% if problem.source %}
+		<div class="subtitle">
+			<h3>Source</h3>
+		</div>
+		<div class="content">
+			<p>{{ problem.source }}</p>
+		</div>
+	{% endif %}
+</div>
+{% endblock %}

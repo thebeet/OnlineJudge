@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Statistics of {{ userprofile.username }}{% endblock %}
+
+{% block content %}
+<h1>Statistics of {{ userprofile.username }}</h1>
+<div class="row">
+	<div class="span4">
+		<div class="alert alert-block">
+		<h3>Statistic</h3>
+		<p>
+			Rank: {{ userprofile.get_rank }} <br />
+			Submit ( User/Total ): {{ userprofile.statistic.all }} <br />
+			Accept ( User/Total ): {{ userprofile.statistic.AC }} <br />
+			Presentation Error: {{ userprofile.statistic.PE }} <br />
+			Wrong Answer: {{ userprofile.statistic.WA }} <br />
+			Runtime Error: {{ userprofile.statistic.RE }} <br />
+			Time Limit Exceed: {{ userprofile.statistic.TLE }} <br />
+			Memory Limit Exceed: {{ userprofile.statistic.MLE }} <br />
+			Output Limit Exceed: {{ userprofile.statistic.OLE }} <br />
+			Compile Error: {{ userprofile.statistic.CE }} <br />
+			Restricted Call: {{ userprofile.statistic.RC }} <br />
+		</p>
+		</div>
+	</div>
+	<div class="span8">
+		<div class="alert alert-success">
+		<h3>Solved</h3>
+		{% for problem in userprofile.problem_solved %}
+			<a href="{% url problem:detail problem.id %}">{{ problem.id }}</a>
+		{% endfor %}
+		</div>
+		<div class="alert alert-error">
+		<h3>Failed</h3>
+		{% for problem in userprofile.problem_failed %}
+			<a href="{% url problem:detail problem.id %}">{{ problem.id }}</a>
+		{% endfor %}
+		</div>
+	</div>
+</div>
+
+{% endblock %}

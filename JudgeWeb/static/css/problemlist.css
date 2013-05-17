@@ -1,0 +1,17 @@
+#problem_list tr img.fav
+{
+	float: right;
+	height: 16px;
+	cursor: pointer;
+}
+
+#problem_list tr.collect img.active
+{
+	display: inline;
+}
+
+#problem_list tr.uncollect:hover img.unactive
+{
+	display: inline;
+}
+

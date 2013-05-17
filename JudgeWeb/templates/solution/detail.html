@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Solution {{ solution.sid }}{% endblock %}
+{% block css %}<link href="{{ STATIC_URL }}css/solution_detail.css" rel="stylesheet">{% endblock %}
+{% block content %}
+{% if request.user.id == solution.user.id %}
+<div><center>
+	<h2>Solution {{ solution.sid }}</h2>
+	<span class="tlabel">User</span> {{ solution.user.username }}
+	<span class="tlabel">Result</span> {{ solution.result }}
+	<span class="tlabel">Time</span> {{ solution.run_time }}ms
+	<span class="tlabel">Memory</span> {{ solution.memory }}KB
+	<span class="tlabel">Judge</span> {{ solution.judger }}
+	<br />
+	<span class="tlabel">Submit Time</span> {{ solution.submit_time }}
+	<span class="tlabel">Language</span> {{ solution.lid }}
+	<span class="tlabel">Code Length</span> {{ solution.code_length }}ms
+</center></div>
+<div class="code_and_result row-fluid"">
+	<div class="span6">
+	
+	<script type="text/javascript" src="/static/syntaxhighlighter/scripts/shCore.js"></script>
+	<script type = "text/javascript"  src = "/static/syntaxhighlighter/scripts/shBrushCpp.js" ></script>
+	<script type = "text/javascript"  src = "/static/syntaxhighlighter/scripts/shBrushJava.js" ></script>
+	<link rel="stylesheet" type="text/css" href="/static/syntaxhighlighter/styles/shCore.css" />
+	<link type="text/css" rel="stylesheet" href="/static/syntaxhighlighter/styles/shThemeDefault.css" />
+	<script type="text/javascript">
+		SyntaxHighlighter.all();
+	</script>
+
+	<pre class="brush:cpp;">{{ solution.source_code }}</pre>
+
+	</div>
+	
+	<div class="span6">
+<pre>Test # 1.....			Accepted
+	Use Time 0ms, Use Memory 48KB
+Test # 2.....			Accepted
+	Use Time 0ms, Use Memory 48KB
+
+Congratulation! Your solution has passed all of test cases.
+	Use Time 0ms, Use Memory 48KB</pre>
+	</div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Statistics of Problem {{ problem.id }}{% endblock %}
+
+{% block content %}
+<h1>Statistics of Problem {{ problem.id }}</h1>
+<div class="row">
+	<div class="span4">
+		<div class="alert alert-block">
+		<h3>Statistic</h3>
+		<p>
+			Submit: {{ problem.statistic.all }} <br />
+			Accept: {{ problem.statistic.AC }} <br />
+			Presentation Error: {{ problem.statistic.PE }} <br />
+			Wrong Answer: {{ problem.statistic.WA }} <br />
+			Runtime Error: {{ problem.statistic.RE }} <br />
+			Time Limit Exceed: {{ problem.statistic.TLE }} <br />
+			Memory Limit Exceed: {{ problem.statistic.MLE }} <br />
+			Output Limit Exceed: {{ problem.statistic.OLE }} <br />
+			Compile Error: {{ problem.statistic.CE }} <br />
+			Restricted Call: {{ problem.statistic.RC }} <br />
+		</p>
+		</div>
+	</div>
+	<div class="span8">
+		<h2>Best Solution</h2>
+		{% include "solution/list_table.html" %}
+	</div>
+</div>
+{% endblock %}

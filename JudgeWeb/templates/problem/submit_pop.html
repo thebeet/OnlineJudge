@@ -1,0 +1,24 @@
+<div class="modal fade" id="submit">
+	<div class="modal-header">
+		<a class="close" data-dismiss="modal">X</a>
+		<h3>Submit</h3>
+	</div>
+	<div class="modal-body">
+		<form class="well form-horizontal">
+			<label class="control-label">Problem</label>
+			<input name="problem" type="text" value="{{ problem.id }}" readonly="readonly" />
+			<label class="control-label">Source Code</label>
+			<textarea name="source"></textarea>
+			{% csrf_token %}
+		</form>
+	</div>
+	<div class="modal-footer">
+		<input id="login_submit" type="submit" class="btn btn-primary" value="Submit" onclick="submit_problem();"></input>
+	</div>
+</div>
+<script>
+	function submit_problem()
+	{
+		$.post("${base}/demo/111",$("#submit form").serialize(),function(data){alert(data)});
+	}
+</script>

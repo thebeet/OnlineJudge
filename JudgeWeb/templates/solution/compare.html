@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Compare{% endblock %}
+
+{% block content %}
+<input type="text" id="user1" />
+<input type="text" id="user2" />
+<input type="submit" onClick="compareUser()" value="Compare" />
+<script type="text/javascript">
+	function compareUser()
+	{
+		user1 = document.getElementById("user1").value;
+		user2 = document.getElementById("user2").value;
+		document.location = "./" + user1 + "-" + user2;
+	}
+</script>
+<p/>
+{% if isexist %}
+<table class="table table-striped table-bordered">
+	<thead>
+		<tr>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>Both {{user1}} and {{user2}} Accetped</tr>
+		<tr>
+			<td>
+				{% for item in acUserSame %}
+				<a href="{% url problem:detail item %}">{{item}}</a>
+				{% endfor %}
+			</td>
+		</tr>
+		<tr>
+			<td class="span6">Just {{user1}} Accetped</td>
+			<td>Just {{user2}} Accetped</td>
+		</tr>
+		<tr>
+			<td>
+				{% for item in acUser1Flag %}
+				<a href="{% url problem:detail item.0 %}" {% if item.1 %}style="color:#FF0000"{% endif %}>
+					{{item.0}}
+				</a>
+				{% endfor %}
+			</td>
+			<td>
+				{% for item in acUser2Flag %}
+				<a href="{% url problem:detail item.0 %}" {% if item.1 %}style="color:#FF0000"{% endif %}>
+					{{item.0}}
+				</a>
+				{% endfor %}
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<p/>
+<table class="table table-striped table-bordered">
+	<thead>
+		<tr>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>Both {{user1}} and {{user2}} Failed</tr>
+		<tr>
+			<td>
+				{% for item in rjUserSame %}
+				<a href="{% url problem:detail item %}">{{item}}</a>
+				{% endfor %}
+			</td>
+		</tr>
+		<tr>
+			<td class="span6">Just {{user1}} Failed</td>
+			<td>Just {{user2}} Failed</td>
+		</tr>
+		<tr>
+			<td>
+				{% for item in rjUser1Only %}
+				<a href="{% url problem:detail item %}">{{item}}</a>
+				{% endfor %}
+			</td>
+			<td>
+				{% for item in rjUser2Only %}
+				<a href="{% url problem:detail item %}">{{item}}</a>
+				{% endfor %}
+			</td>
+		</tr>
+	</tbody>
+</table>
+{% endif %}
+{% endblock %}

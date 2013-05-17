@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Contests{% endblock %}
+
+{% block content %}
+<h1>Contests</h1>
+<table class="table table-striped table-bordered table-hover">
+	<thead>
+		<tr>
+			<th> Title </th>
+			<th> Start Time </th>
+			<th> End Time </th>
+			<th class="span1"> Status </th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for contest in object_list %}
+		<tr>
+			<td> <a href="{% url contest:detail contest.id %}">{{ contest.title }} </td>
+			<td> {{ contest.start_time }} </td>
+			<td> {{ contest.end_time }} </td>
+			<td> {{ contest.status|title }} </td>
+		</tr>
+	{% empty %}
+		<tr>
+			<td> No contest. </td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% if is_paginated %}
+<div class="pagination pagination-centered">
+	<ul>
+		<li {% if not page_obj.has_previous %}class="disabled"{% endif %}>
+			<a href="?page={{ page_obj.previous_page_number }}"> prev </a>
+		</li>
+		{% for p in paginator.page_range %}
+		<li {% if p == page_obj.number %}class="active"{% endif %}>
+			<a href="?page={{ p }}">{{ p }}</a>
+		</li>
+		{% endfor %}
+		<li {% if not page_obj.has_next %}class="disabled"{% endif %}>
+			<a href="?page={{ page_obj.next_page_number }}"> next </a>
+		</li>
+	</ul>
+</div>
+{% endif %}
+{% endblock %}

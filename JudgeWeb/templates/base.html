@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>{% block title %}{% endblock %}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="XMU Online Judge is ">
+		<meta name="author" content="thebeet@gmail.com">
+		{% block metadata %}{% endblock %}
+		<link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+		<link href="{{ STATIC_URL }}css/css.css" rel="stylesheet">
+		{% block css %}{% endblock %}
+	</head>
+<body>
+{% include "nav.html" %}
+<div class="container">
+	{% block content %}{% endblock %}
+</div>
+{% if sql_queries %}
+<div class="container">
+	<h2>SQL excute in this Request</h3>
+	<!-- debug: show the sql excute in this request -->
+	{% for query in sql_queries %}
+	<h3>Excute times: {{query.time}}</h3>
+		<p>
+			<code>
+			{{query.sql}}
+			</code>
+		</p>
+	{% endfor %}<!-- debug ends here -->
+</div>
+{% endif %}
+<script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+<script src="{{ STATIC_URL }}js/onlinejudge.js"></script>
+{% include "footer.html" %}
+</body>
+</html>

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load array %}
+{% block title %}Statistics of Contest {{ contest.id }}{% endblock %}
+
+{% block content %}
+<h1>Statistics of Contest {{ contest.id }}</h1>
+<table class="table table-striped table-bordered table-hover">
+	<thead>
+		<tr>
+			<th> ID </th>
+			<th> TITLE </th>
+			<th> SOLVED </th>
+			<th> SUBMIT </th>
+			{% for result in result_all_short %}
+			<th> {{ result }} </th>
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+	{% for problem in contest.statistic %}
+		<tr>
+			<td> {{ problem.display_order }} </td>
+			<td> <a href="{% url problem:detail problem.id %}">{{ problem.title }} </td>
+			<td> {{ problem.statistic.solved }}</td>
+			<td> {{ problem.statistic.all }} </td>
+			{% for result in result_all_short %}
+			<td> {{ problem.statistic|array:result }} </td>
+			{% endfor %}
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

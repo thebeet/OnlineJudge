@@ -1,0 +1,31 @@
+{% load result %}
+<table class="table table-striped table-bordered table-hover">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Problem</th>
+			<th>User</th>
+			<th>Result</th>
+			<th>Time</th>
+			<th>Memory</th>
+			<th>Language</th>
+			<th>Code Length</th>
+			<th>Submit Time</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for solution in object_list %}
+		<tr>
+			<td>{% if request.user.id == solution.user.id %}<a href="{% url solution:detail solution.id %}">{% endif %}{{ solution.id }}</a></td>
+			<td><a href="{% url problem:detail solution.problem.id %}">{{ solution.problem.id }}</td>
+			<td><a href="{% url user:statistic solution.user.username %}">{{ solution.user.username }}</a></td>
+			<td>{{ solution.result|result }}</td>
+			<td>{% if solution.run_time != None %}{{ solution.run_time }}ms{% endif %}</td>
+			<td>{% if solution.memory != None %}{{ solution.memory }}KB{% endif %}</td>
+			<td>{{ solution.language.name }}</td>
+			<td>{{ solution.source_code|length }}</td>
+			<td>{{ solution.submit_time }}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>

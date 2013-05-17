@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block title %}DashBoard{% endblock %}
+{% block content %}
+<h1>DashBoard</h1>
+<input type="date" name="start_date" id="begDate" value='{{dateBegText}}' />
+<input type="date" name="end_date" id="endDate" value='{{dateEndText}}' />
+<input type="submit" value="Change" onClick="setDateRange()" />
+<script type="text/javascript">
+	function setDateRange()
+	{
+		dateBeg = document.getElementById("begDate").value;
+		dateEnd = document.getElementById("endDate").value;
+		if(checkDate(dateBeg) == true && checkDate(dateEnd) == true)
+		{
+			document.location = "./" + dateToNum(dateBeg) + "-" + dateToNum(dateEnd);
+		}
+	}
+	function checkDate(date){ 
+		var a=/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})/ 
+		if (!a.test(date))
+		{
+			alert("date type error!") 
+			return false 
+		} 
+		else
+		{
+			return true 
+		}
+	}
+	function dateToNum(date)
+	{
+		return date.replace("-", "").replace("-", "");
+	}
+</script>
+
+<div class="tabbable"  style="height: 500px;">
+	<ul class="nav nav-tabs">
+    	<li><a href="#chart_div" data-toggle="tab">Solution Info</a></li>
+    	<li><a href="#pie_div" data-toggle="tab">Judge Info</a></li>
+    	<li class="active"><a href="#sysinfo_div" data-toggle="tab">System Info</a></li>
+	</ul>
+	<div class="tab-content">
+		<div class="tab-pane " id="chart_div" style="height: 600px;"></div>
+	    <div class="tab-pane " id="pie_div" style="height: 600px;"></div>
+	    <div class="tab-pane active" id="sysinfo_div" style="height: 600px;" >
+		
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
+		<script type='text/javascript'>
+			  timerID = setInterval("refreshGauge()",10000);
+			  function refreshGauge()
+			  {
+				$("div#sysinfo_div").load(location.href + ' #sysinfo_div', drawChart());
+			  }
+			  google.load('visualization', '1', {packages:['gauge']});
+			  google.setOnLoadCallback(drawChart);
+			  function drawChart() {
+				alert("test")
+				var options = {
+				  width: 200, height: 200,
+				  redFrom: 90, redTo: 100,
+				  yellowFrom:75, yellowTo: 90,
+				  minorTicks: 5
+				};
+
+
+				var gaugeValueArray = new Array({{memstat.UsedPercent}}, {{diskstat.UsedPercent}});
+				var gaugeLabelArray = new Array('Memory', 'Disk');
+				var gaugeDivArray = new Array('meminfo_div', 'diskinfo_div');
+				for (i = 0; i < 2; i++)
+				{
+					var data = google.visualization.arrayToDataTable([
+					  ['Label', 'Value'],
+					  [gaugeLabelArray[i], gaugeValueArray[i]],
+					]);
+					var chart = new google.visualization.Gauge(document.getElementById(gaugeDivArray[i]));
+					chart.draw(data, options);
+				}
+			  }
+			</script>
+			<table  class="table table-striped">
+				<tr>
+					<th><div width="200px" id="meminfo_div" /></th>
+					<th><div width="200px" id="diskinfo_div" /></th>
+				</tr>
+				<tr>
+					<th>
+						Memory Used:{{memstat.MemUsed}}<p/>
+						Memory Total:{{memstat.MemTotal}}<p/>
+					</th>
+					<th>
+						Disk Used:{{diskstat.used}}<p/>
+						Disk Total:{{diskstat.capacity}}
+					</th>
+				</tr>
+			</table>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>1 Minute Average Load</th>
+						<th>5 Minute Average Load</th>
+						<th>15 Minute Average Load</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th>
+							{{loadstat.lavg_1}}
+						</th>
+						<th>
+							{{loadstat.lavg_5}}
+						</th>
+						<th>
+							{{loadstat.lavg_15}}
+						</th>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+	google.load("visualization", "1", {packages:["corechart"]});
+	google.setOnLoadCallback(drawChart);
+	function drawChart() {
+		var data = google.visualization.arrayToDataTable([
+			['Date', 'Waiting', 'Accepted', 'Presentation Error', 'Wrong Answer',
+            'Runtime error', 'Time Limit Exceed', 'Memory Limit Exceed',
+            'Output Limit Exceed', 'Compile Error', 'System Error',
+            'Validate Error', 'Restricted Call', 'Running'],
+			{% for row in ac_statistics %}
+				['{{row.0}}', {{row.1}}, {{row.2}}, {{row.3}}, {{row.4}}, {{row.5}}, {{row.6}}, {{row.7}}, {{row.8}}, {{row.9}}, {{row.10}}, {{row.11}}, {{row.12}}, {{row.13}}],
+			{% endfor%}
+		]);
+
+		var options = {
+			title: 'Judge Statistical'
+		};
+
+		var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+		chart.draw(data, options);
+	}
+</script>
+<script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawPieChart);
+      function drawPieChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Judge Result', 'Count'],
+			{% for row in piechart_data %}
+				['{{ row.result }}', {{ row.type_count }}],
+			{% endfor %}
+        ]);
+
+        var options = {
+          title: 'Judge Result'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('pie_div'));
+        chart.draw(data, options);
+      }
+</script>
+{% endblock %}

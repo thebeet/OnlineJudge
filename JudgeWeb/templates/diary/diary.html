@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Develop Diary{% endblock %}
+{% block content %}
+<h1>Develop Diary</h1>
+	<table class="table table-striped table-bordered table-hover">
+		<tbody>
+		{% for record in object_list %}
+			<tr>
+				<td> {{record.create_time|date:"Y年m月d日"}} </td>
+				<td> {{ record.content|safe}} </td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

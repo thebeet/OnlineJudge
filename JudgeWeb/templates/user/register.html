@@ -1,0 +1,364 @@
+﻿{% extends "base.html" %}
+{% load temp_tags %}
+{% block title %}Mail{% endblock %}
+{% block content %}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+
+<h1>Register - XMU JudgeOnline</h1>
+
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://acm.xmu.edu.cn/JudgeOnline/rss.php">
+<style type="text/css">
+#info a:link, #info a:visited, #bottom a:link, #bottom a:visited, #login a:link, #login a:visited{
+	text-decoration:none;
+	font-weight:bold;
+	color:#000;
+}
+#info a:hover, #bottom a:hover, #login a:hover{
+	text-decoration:none;
+	font-weight:bold;
+	color:#FFF;
+	background-color:#80BFFF;
+}
+</style>
+
+
+<style type="text/css">
+<!--
+#info {
+	width: auto;
+	margin-top: 2px;
+	padding: 10px;
+	text-align: center;
+	background-color: #FFFFFF;
+	height: auto;
+}
+#bottom {
+	background-color: #D2DCFD;
+	text-align: left;
+	width: auto;
+	height: auto;
+	margin-top: 2px;
+	padding: 30px;
+}
+.table_title {
+	font-size: 18px;
+	font-weight: bold;
+	line-height:24px;
+}
+table tr td {
+	font-size: 14px;
+	font-weight: bold;
+	line-height:18px;
+	text-align:left;
+	border: 1px solid #D2DCFD;
+	padding:10px;
+}
+table, table caption{
+	margin-left:auto;
+	margin-right:auto;
+}
+
+-->
+</style>
+<script src="/static/js/SpryValidationTextField.js" type="text/javascript"></script><style type="text/css"></style>
+<link href="/static/css/SpryValidationTextField.css" rel="stylesheet" type="text/css">
+
+<body>
+
+<div id="container">
+
+
+
+<div id="info">
+<form class="well" method="POST">
+	{% csrf_token %}
+  <table width="830" cellspacing="3" id="form_table">
+    <caption>
+      <span class="table_title">Register for XMU Online Judge</span>
+    </caption>
+    <tbody><tr>
+      <td width="75">User Name:</td>
+      <td width="700"><span id="sprytextfield_username">
+      <input name="username" type="text" id="username" autocomplete="off"{% if isModify %} value = "{{userProfile.username}}" disabled="disabled"{% endif %}>
+      <span class="textfieldRequiredMsg">Please don't leave this blank!</span><span class="textfieldMaxCharsMsg">Username Must be less than 20 letters!</span></span></td>
+    </tr>
+    <tr>
+      <td>Nick Name:</td>
+      <td><span id="sprytextfield_nickname">
+      <input name="nickname" type="text" id="nickname" autocomplete="off"{% if isModify %} value = "{{userProfile.nickname}}" {% endif %}>
+      <span class="textfieldRequiredMsg">Please don't leave this blank!</span><span class="textfieldMaxCharsMsg">Nickname Must be less than 255 letters!</span></span></td>
+    </tr>
+    <tr>
+      <td>Password:</td>
+      <td><span id="sprytextfield_password">
+      <input name="password" type="password" id="password" maxlength="255" autocomplete="off" onblur="checkPW();" onkeyup="checkPW();">
+      <span class="textfieldRequiredMsg">Please don't leave this blank!</span><span class="textfieldMinCharsMsg">Password Must be more than 6 letters!</span></span></td>
+    </tr>
+    <tr>
+      <td>Repeat Password:</td>
+      <td><span id="sprytextfield_password2">
+      <input name="password2" type="password" id="password2" maxlength="255" autocomplete="off" onblur="checkPW();" onkeyup="checkPW();">
+      <span id="pwcheckinfo" ></span>
+      <span class="textfieldRequiredMsg">Please don't leave this blank!</span><span class="textfieldMinCharsMsg">Password Must be more than 6 letters!</span></span></td>
+    </tr>
+    <tr>
+      <td>E-mail:</td>
+      <td><span id="sprytextfield_email">
+      <input name="email" type="text" id="email" autocomplete="off"{% if isModify %} value = "{{userProfile.email}}" {% endif %}>
+      <span class="textfieldRequiredMsg">Please don't leave this blank!</span><span class="textfieldInvalidFormatMsg">Invalid E-mail!</span><span class="textfieldMaxCharsMsg">E-mail Must be less than 100 letters!</span></span></td>
+    </tr>
+    <tr>
+      <td>School / Company:</td>
+      <td>
+          <input type="radio" name="school" id="radio_school_xmu" value="xmu" onclick="handle_school(this.value);" >Xmu &nbsp;&nbsp;
+          <input type="radio" name="school" id="radio_school_xujc" value="xujc" onclick="handle_school(this.value);">Xujc&nbsp;&nbsp;
+          <input type="radio" name="school" id="radio_school_xmycxx" value="xmycxx" onclick="handle_school(this.value);">Xmycxx&nbsp;&nbsp;
+          <input type="radio" name="school" id="radio_school_other" value="other" onclick="handle_school(this.value);">Others:
+          <input name="school_other" type="text" id="school_other" style="background-color:#CCC;" maxlength="255" readonly="readonly">
+      </td>
+    </tr>
+    <tr id="ins_dep">
+    	<td colspan="2">
+        <div id="Student_No" style="padding:5px;">
+        Student No: <input name="stu_no" type="text" id="stu_no" maxlength="45" {% if isModify %} value = "{{userProfile.stu_no}}" {% endif %}>
+        </div>
+        <div style="padding:5px;">
+		Institute:&nbsp;
+    <select name="institute" id="institute" onchange="xajax_get_department(this.value, 'department_select');"><option value="信息科学与技术学院" >信息科学与技术学院</option><option value="软件学院" >软件学院</option><option value="材料学院" >材料学院</option><option value="财务管理与会计研究院" >财务管理与会计研究院</option><option value="法学院" >法学院</option><option value="公共事务学院" >公共事务学院</option><option value="管理学院" >管理学院</option><option value="国际学院" >国际学院</option><option value="国学研究院" >国学研究院</option><option value="海外教育学院" >海外教育学院</option><option value="海峡两岸发展研究院" >海峡两岸发展研究院</option><option value="海洋与海岸带发展研究院" >海洋与海岸带发展研究院</option><option value="海洋与环境学院" >海洋与环境学院</option><option value="化学化工学院" >化学化工学院</option><option value="继续教育与职业教育学院" >继续教育与职业教育学院</option><option value="建筑与土木工程学院" >建筑与土木工程学院</option><option value="教育研究院" >教育研究院</option><option value="经济学院" >经济学院</option><option value="南洋研究院" >南洋研究院</option><option value="人文学院" >人文学院</option><option value="生命科学学院" >生命科学学院</option><option value="生物医学研究院" >生物医学研究院</option><option value="数学科学学院" >数学科学学院</option><option value="台湾研究院" >台湾研究院</option><option value="体育教学部" >体育教学部</option><option value="外文学院" >外文学院</option><option value="王亚南经济研究院" >王亚南经济研究院</option><option value="物理与机电工程学院" >物理与机电工程学院</option><option value="厦门国际法高等研究院" >厦门国际法高等研究院</option><option value="新闻传播学院" >新闻传播学院</option><option value="医学院" >医学院</option><option value="艺术学院" >艺术学院</option></select></span>
+    <span id="department_select">
+    <select name="department" id="department" ><option value="计算机科学系" selected="selected">计算机科学系</option><option value="智能科学与技术系" >智能科学与技术系</option><option value="电子工程系" >电子工程系</option><option value="通信工程系" >通信工程系</option><option value="自动化系" >自动化系</option></select></span>
+
+        </div>
+        </td>
+    </tr>
+    <tr>
+      <td colspan="2"><div align="center">You can choose to fill the following form</div></td>
+      </tr>
+    <tr>
+      <td>Real Name:</td>
+      <td><input name="realname" type="text" maxlength="45" {% if isModify %} value = "{{userProfile.realname}}" {% endif %}></td>
+    </tr>
+    <tr>
+      <td>Sex:</td>
+      <td><input name="sex" type="radio" id="radioMale" value="male">Male
+          <input type="radio" name="sex" id="radioFemale" value="female">Female</td>
+    </tr>
+    <tr>
+      <td>Birthday:</td>
+      <td><span id="sprytextfield_birthday">
+      <input type="date" name="birthday" id="birthday" autocomplete="off" {% if isModify %} value = "{{userProfile.birthday|date:"Y-m-d"}}" {% endif %}>
+      <span class="textfieldInvalidFormatMsg">Invalid Date!</span> <span class="textfieldMinValueMsg">You could not be so old!</span><span class="textfieldMaxValueMsg">Your Birthday is beyond today!</span></span> Example: 1986-05-31</td>
+    </tr>
+    <tr>
+      <td>Address:</td>
+      <td><input name="address" type="text" id="address" size="100" {% if isModify %} value = "{{userProfile.address}}" {% endif %}></td>
+    </tr>
+    <tr>
+      <td>Phone:</td>
+      <td>
+        <input type="text" name="phone" id="phone" {% if isModify %} value = "{{userProfile.phone}}" {% endif %}>
+        </td>
+    </tr>
+    <tr>
+      <td colspan="2"><div align="center">
+        <input type="submit" {% if isModify %} value="Modify" {% else %} value="Register" {% endif %} onclick="return handle_form();"> &nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="reset" value="Reset">
+      </div></td>
+      </tr>
+  </tbody></table>
+  </form>
+</div>
+
+
+
+</div>
+
+</div>
+<script language="javascript" type="text/javascript">
+function handle_school(value){
+	var e = document.getElementById("school_other");
+	var i_d = document.getElementById("ins_dep");
+	//alert(e.getAttribute("readonly")+"\n"+value);
+	if( value=="other" ){
+		e.setAttribute("style","background-color:FFF;");
+		e.style.backgroundColor = "FFF";
+		i_d.style.display = "none";
+		e.readOnly = false;
+		e.focus();
+	}else if( value=="xmu" ){
+		e.readOnly = true;
+		e.setAttribute("style","background-color:CCC;");
+		e.style.backgroundColor = "CCC";
+		i_d.style.display = "";
+	}else{
+		e.readOnly = true;
+		e.setAttribute("style","background-color:CCC;");
+		e.style.backgroundColor = "CCC";
+		i_d.style.display = "none";
+	}
+}
+
+function handle_form(){
+	var reg = /^[\w]+$/;
+	var user = document.getElementById("username");
+	if( !reg.test(user.value) ){
+		alert("Please input letters and numbers only for Username!");
+		user.focus();
+		return false;
+	}
+	
+	/*var nick = document.getElementById("nickname");
+	if( !reg.test(nick.value) ){
+		alert("Please input letters and numbers only for Nickname!");
+		nick.focus();
+		return false;
+	}*/
+	
+	var reg_school = /^[^<>]+$/;
+	var school = document.getElementById("form1").school;
+	var school_check = false;
+	var stu_no_needed = false;
+	for(i=0; i<school.length; ++i){
+		if( school[i].value=="other" && school[i].checked ){
+			school_check = true;
+			break;
+		}
+		if( school[i].value=="xmu" && school[i].checked ){
+			stu_no_needed = true;
+			break;
+		}
+	}
+	if( school_check ){
+		var school_other = document.getElementById("school_other");
+		if( !reg_school.test(school_other.value) ){
+			alert("Please don't input html label or leave blank in school!");
+			school_other.focus();
+			return false;
+		}
+	}
+	
+	if( stu_no_needed ){
+		var stu_no = document.getElementById("stu_no");
+		if( !reg.test(stu_no.value) || !reg.test(stu_no.value) ){
+			alert("Please don't input html label or leave blank in Student Number!");
+			stu_no.focus();
+			return false;
+		}
+	}
+	
+	var pwd = document.getElementById("password");
+	var pwd2 = document.getElementById("password2");
+	if( pwd.value != pwd2.value ){
+		alert("The two passwords must be the same!");
+		pwd.focus();
+		return false;
+	}
+}
+</script>
+<script type="text/javascript">
+    function checkPW()
+    {
+        pw1 = $("#password").val();
+        pw2 = $("#password2").val();
+        {% if isModify %}
+        if(pw1.length < 6 || pw2.length < 6)
+        {
+            $("#pwcheckinfo").text("Password Must be more than 6 letters!");
+            return;
+        }
+        {% endif %}
+        if(pw2 != "" && pw1.length >= 6 && pw2.length >= 6)
+        {
+            if(pw1 != pw2)
+            {
+                $("#pwcheckinfo").text("Password Not Agreed");
+                $("#password").css({"background-color":"LightPink"});
+                $("#password2").css({"background-color":"LightPink"});
+            }
+            else
+            {
+                $("#pwcheckinfo").text("");
+                $("#password").css({"background-color":"LightGreen"});
+                $("#password2").css({"background-color":"LightGreen"});
+            }
+        }
+        else
+        {
+            $("#password").removeAttr("style");
+            $("#password2").removeAttr("style");
+        }
+    }
+</script>
+
+<script type="text/javascript">
+$(document).ready(function()
+{
+    {% if isModify %}
+        //设置学校
+        if("{{userProfile.school}}" == "xmu")
+        {
+            $("#radio_school_xmu").attr("checked", "checked");
+        }
+        else if("{{userProfile.school}}" == "xujc")
+        {
+            $("#radio_school_xujc").attr("checked", "checked");
+        }
+        else if("{{userProfile.school}}" == "xmycxx")
+        {
+            $("#radio_school_xmycxx").attr("checked", "checked");
+        }
+        else
+        {
+            $("#radio_school_other").attr("checked", "checked");
+            $("#school_other").removeAttr("disabled", "disabled");
+        }
+        //学院
+        setComboBoxSelection("institute", "{{userProfile.institute}}");
+        //系
+        setComboBoxSelection("department", "{{userProfile.department}}");
+        //设置性别
+        if("{{userProfile.gender}}" == 1)
+        {
+            $("#radioMale").attr("checked", "checked");
+        }
+        else
+        {
+            $("#radioFemale").attr("checked", "checked");
+        }
+    {% endif %}
+/*$("div#dashboard").load('index1.htm #content *');
+	$.get('test.txt',function(data){
+	
+	$("#dashboard").html(data );  
+	});
+  $('div#dashboard').load("test1.html #content *");*/
+});
+
+function setComboBoxSelection(comboxname, optionname)
+{
+    var count=$("#" + comboxname + " option").length;
+    for(var i=0;i<count;i++)  
+    {
+        if($("#" + comboxname).get(0).options[i].text == optionname)  
+        {  
+            $("#" + comboxname).get(0).options[i].selected = true;  
+            break;
+        }
+    }
+}
+
+</script>
+
+<script type="text/javascript">
+var sprytextfield1 = new Spry.Widget.ValidationTextField("sprytextfield_username", "none", {validateOn:["blur"], maxChars:20});
+var sprytextfield2 = new Spry.Widget.ValidationTextField("sprytextfield_nickname", "none", {validateOn:["blur"], maxChars:255});
+{% if not isModify %}
+var sprytextfield3 = new Spry.Widget.ValidationTextField("sprytextfield_password", "none", {validateOn:["blur"], minChars:6});
+var sprytextfield4 = new Spry.Widget.ValidationTextField("sprytextfield_password2", "none", {validateOn:["blur"], minChars:6});
+{% endif %}
+var sprytextfield5 = new Spry.Widget.ValidationTextField("sprytextfield_email", "email", {validateOn:["blur"], maxChars:100});
+var sprytextfield6 = new Spry.Widget.ValidationTextField("sprytextfield_birthday", "date", {isRequired:false, validateOn:["blur"], useCharacterMasking:true, format:"yyyy-mm-dd", minValue:"1902-01-01", maxValue:"2012-10-11"});
+
+</script>
+<!---->
+{% endblock %}

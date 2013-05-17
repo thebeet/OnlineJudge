@@ -1,0 +1,98 @@
+<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="navbar-inner">
+   		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</a>
+			<a class="brand" href="{% url home %}">Online Judge</a>
+			<div class="nav-collapse">
+    			<menu class="nav">
+					<li {% ifequal CURRENT_APP "home" %}class="active"{% endifequal %}>
+						<a href="{% url home %}">Home</a>
+					</li>
+					<li {% ifequal CURRENT_APP "problem" %}class="active"{% endifequal %}>
+						<a href="{% url problem:volume %}">Problem</a>
+					</li>
+					<form class="navbar-search" action="/problem/">
+						<input type="text" name="search" class="search-query span2" placeholder="search" value="{{ request.GET.search }}">
+					</form>
+					<li {% ifequal CURRENT_APP "solution" %}class="active"{% endifequal %}>
+						<a href="{% url solution:list %}">Solution</a>
+					</li>
+					<li class="dropdown {% ifequal CURRENT_APP "contest" %}active{% endifequal %}">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Contest<b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="{% url contest:list status='now' %}">Running Contest({{ running_contest }})</a></li>
+							<li><a href="{% url contest:list status='past' %}">Past Contest</a></li>
+							<li><a href="{% url contest:list status='scheduled' %}">Scheduled Contest({{ scheduled_contest }})</a></li>
+							<li><a href="{% url contest:list %}">All Contest</a></li>
+						</ul>
+					</li>
+					<li {% ifequal CURRENT_APP "user" %}class="active"{% endifequal %}>
+						<a href="{% url user:rank %}">Ranks</a>
+					</li>
+					<li {% ifequal CURRENT_APP "discuss" %}class="active"{% endifequal %}>
+						<a href="{% url discuss:list %}">Discuss</a>
+					</li>
+				</menu>
+				<menu class="nav pull-right">
+					{% if user.is_authenticated %}
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.username }}({{ new_mail }})<b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="{% url user:statistic user.username %}">My Statistic</a></li>
+							<li><a href="{% url solution:list %}?user={{ user.username }}">My Solution</a></li>
+							<li><a href="{% url problem:favproblem %}">My Problems</a></li>
+							<li><a href="/mail/inbox">My Mail({{ new_mail }})</a></li>
+                            <li><a href="{% url user:register %}?user={{ user.username }}">My Profile</a></li>
+						</ul>
+					</li>
+					<li class="pull-right"><a href="#logout" onclick="$('#logout_form').submit();">Logout</a></li>
+					<form id="logout_form" action="{% url user:logout %}" method="post">
+						{% csrf_token %}
+					</form>
+					{% else %}
+					<li class="pull-right"><a data-toggle="modal" href="#login">Login</a></li>
+					<li class="pull-right"><a href="{% url user:register %}">Register</a></li>
+					{% endif %}
+				</menu>
+			</div>
+		</div>
+	</div>
+</div>
+{% if user.is_authenticated %}{% else %}
+<div class="modal fade hide" id="login">
+	<div class="modal-header">
+		<a class="close" data-dismiss="modal">×</a>
+		<h3>Login</h3>
+	</div>
+	<div class="modal-body">
+		<form id="login_form" class="well form-horizontal">
+			<div class="control-group">
+				<label class="control-label">User:</label>
+				<div class="controls">
+					<input name="username" type="text" placeholder="Username">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Password:</label>
+				<div class="controls">
+					<input name="password" type="password" placeholder="Password">
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<label class="checkbox"><input name="remember" type="checkbox" title="Remember">Remember Me</label>
+				</div>
+			</div>
+			{% csrf_token %}
+		</form>
+	</div>
+	<div class="modal-footer">
+		<input type="button" class="btn" data-dismiss="modal" value="Close">
+		<input id="login_submit" type="submit" class="btn btn-primary" value="Submit">
+	</div>
+</div>
+{% endif %}

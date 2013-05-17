@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load page %}
+{% block title %}Solutions{% endblock %}
+
+{% block content %}
+<h1>Solution</h1>
+<form class="form-inline">
+	<label>Problem:
+		<input class="span2" type="text" name="problem" value="{{ request.GET.problem }}"/>
+	</label>
+	<label>User:
+		<input class="span2" type="text" name="user" value="{{ request.GET.user }}" />
+	</label>
+	<label>Result:
+		<select class="span2" name="result">
+			<option value=""></option>
+			{% for value in result_all %}
+			{% if not forloop.first %}
+			<option value="{{ forloop.counter0 }}"{% ifequal forloop.counter0|stringformat:"s" request.GET.result %} selected="selected"{% endifequal %}>{{ value }}</option>
+			{% endif %}
+			{% endfor %}
+		</select>
+	</label>
+	<label>Language:
+		<select class="span2" name="language">
+			<option value=""></option>
+			<option value="1">G++</option>
+		</select>
+	</label>
+	<input type="submit" value="Go" />
+</form>
+{% include "solution/list_table.html" %}
+{% if is_paginated %}
+<div class="pagination pagination-centered">
+	<ul>
+		<li {% if not page_obj.has_previous %}class="active"{% endif %}>
+			<a href="?{{ request.GET|page:1 }}">top</a>
+		</li>
+		<li {% if not page_obj.has_previous %}class="disabled"{% endif %}>
+			<a {% if page_obj.has_previous %}href="?{{ request.GET|page:page_obj.previous_page_number }}"{% endif %}>prev</a>
+		</li>
+		<li {% if not page_obj.has_next %}class="disabled"{% endif %}>
+			<a {% if page_obj.has_next %}href="?{{ request.GET|page:page_obj.next_page_number }}"{% endif %}>next</a>
+		</li>
+	</ul>
+</div>
+{% endif %}
+{% endblock %}
